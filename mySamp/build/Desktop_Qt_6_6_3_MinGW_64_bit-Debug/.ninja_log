@@ -1,0 +1,12 @@
+# ninja log v6
+4	605	7489435217836605	mySamp_autogen/timestamp	8ed800e26d5e6dfe
+4	605	7489435217836605	mySamp_autogen/mocs_compilation.cpp	8ed800e26d5e6dfe
+4	605	7489435217836605	E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/mySamp_autogen/timestamp	8ed800e26d5e6dfe
+4	605	7489435217836605	E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/mySamp_autogen/mocs_compilation.cpp	8ed800e26d5e6dfe
+611	695	7489435219586598	mySamp_autogen/EWIEGA46WW/qrc_res.cpp	230d5e93e46141f0
+611	695	7489435219586598	E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/mySamp_autogen/EWIEGA46WW/qrc_res.cpp	230d5e93e46141f0
+717	851	7489435219886632	CMakeFiles/mySamp.dir/mySamp_autogen/EWIEGA46WW/qrc_res.cpp.obj	52a73a46e39ba22b
+702	2629	7489435219726639	CMakeFiles/mySamp.dir/main.cpp.obj	a0c387c7566e0ac5
+695	2709	7489435219656613	CMakeFiles/mySamp.dir/mySamp_autogen/mocs_compilation.cpp.obj	ca41117a40c51c7a
+709	2820	7489435219796629	CMakeFiles/mySamp.dir/mainwindow.cpp.obj	cff8c1360a5b53ae
+2821	3111	7489435240916611	mySamp.exe	e158625a3954a57f

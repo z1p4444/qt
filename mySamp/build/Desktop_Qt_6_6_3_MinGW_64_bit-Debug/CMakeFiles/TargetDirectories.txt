@@ -1,0 +1,9 @@
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/mySamp.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/install.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/mySamp_autogen_timestamp_deps.dir
+E:/c++/qt/mySamp/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/mySamp_autogen.dir

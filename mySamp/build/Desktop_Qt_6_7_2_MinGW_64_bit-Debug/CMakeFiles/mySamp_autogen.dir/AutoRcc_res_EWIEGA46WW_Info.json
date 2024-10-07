@@ -1,0 +1,38 @@
+{
+	"BUILD_DIR" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/mySamp_autogen",
+	"CMAKE_BINARY_DIR" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "D:/myQtCode/mySamp",
+	"CMAKE_SOURCE_DIR" : "D:/myQtCode/mySamp",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/mySamp_autogen/include",
+	"INPUTS" : 
+	[
+		"D:/myQtCode/mySamp/images/WORDUNDR.BMP",
+		"D:/myQtCode/mySamp/images/new2.bmp",
+		"D:/myQtCode/mySamp/images/ITL.BMP",
+		"D:/myQtCode/mySamp/images/open3.bmp",
+		"D:/myQtCode/mySamp/images/BLD.BMP",
+		"D:/myQtCode/mySamp/images/cut.bmp",
+		"D:/myQtCode/mySamp/images/430.bmp",
+		"D:/myQtCode/mySamp/images/DBLUNDR.BMP",
+		"D:/myQtCode/mySamp/images/paste.bmp",
+		"D:/myQtCode/mySamp/images/20.ico",
+		"D:/myQtCode/mySamp/images/103.bmp",
+		"D:/myQtCode/mySamp/images/120.bmp",
+		"D:/myQtCode/mySamp/images/UNDRLN.BMP",
+		"D:/myQtCode/mySamp/images/exit.bmp"
+	],
+	"LOCK_FILE" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/CMakeFiles/mySamp_autogen.dir/AutoRcc_res_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "res" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_res.cpp",
+	"RCC_EXECUTABLE" : "D:/Qt/6.7.2/mingw_64/./bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/CMakeFiles/mySamp_autogen.dir/AutoRcc_res_EWIEGA46WW_Used.txt",
+	"SOURCE" : "D:/myQtCode/mySamp/res.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}

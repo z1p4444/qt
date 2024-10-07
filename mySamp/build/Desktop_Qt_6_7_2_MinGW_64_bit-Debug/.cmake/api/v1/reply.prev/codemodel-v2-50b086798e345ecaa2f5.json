@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-de8ded2f50c975910000.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "mySamp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "mySamp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mySamp-Debug-e8e9a3ddcf41b62495ba.json",
+					"name" : "mySamp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mySamp_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mySamp_autogen-Debug-f79ad76ec51e140ca846.json",
+					"name" : "mySamp_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mySamp_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mySamp_autogen_timestamp_deps-Debug-d687042f9aab76b52825.json",
+					"name" : "mySamp_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/myQtCode/mySamp/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+		"source" : "D:/myQtCode/mySamp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
