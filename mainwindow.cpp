@@ -25,27 +25,49 @@ MainWindow::~MainWindow()
 
 void MainWindow::btnNumClicked()
 {
-    QString str =ui->display->text();
-    str += qobject_cast<QPushButton*>(sender())->text();
-    ui->display->setText(str);
+    QString digit = qobject_cast<QPushButton*>(sender())->text();
 
+    if(digit == "0" && operand == "0")
+        digit = "";
+    if(operand == "0" && digit != "0")
+        operand = "";
+
+    operand +=digit;
+
+
+
+    ui->display->setText(operand);
+
+
+}
+
+void MainWindow::binaryOperatorClicked()
+{
 
 }
 
 void MainWindow::on_btnPeriod_clicked()
 {
-    QString str =ui->display->text();
-    if(!str.contains("."))
-        str += qobject_cast<QPushButton*>(sender())->text();
-     ui->display->setText(str);
+
+    if(!operand.contains("."))
+        operand += qobject_cast<QPushButton*>(sender())->text();
+     ui->display->setText(operand);
 }
 
 
 void MainWindow::on_btnDel_clicked()
 {
-    QString str =ui->display->text();
-    str = str.left(str.length() - 1);
-    ui->display->setText(str);
+
+    operand = operand.left(operand.length() - 1);
+    ui->display->setText(operand);
+
+}
+
+
+void MainWindow::on_btnClear_clicked()
+{
+    operand.clear();
+    ui->display->setText(operand);
 
 }
 

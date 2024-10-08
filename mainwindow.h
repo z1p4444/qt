@@ -16,12 +16,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    QString operand;
 private slots:
     void btnNumClicked();
 
     void on_btnPeriod_clicked();
 
     void on_btnDel_clicked();
+
+    void on_btnClear_clicked();
 
 private:
     Ui::MainWindow *ui;
