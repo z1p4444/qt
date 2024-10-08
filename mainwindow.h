@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+private slots:
+    void btnNumClicked();
 
 private:
     Ui::MainWindow *ui;
