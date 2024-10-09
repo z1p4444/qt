@@ -29,6 +29,8 @@ private slots:
 
     void btnBinaryOperatorClicked();
 
+    void btnUnaryOperatorClicked();
+
     void on_btnPeriod_clicked();
 
     void on_btnDel_clicked();
@@ -36,6 +38,8 @@ private slots:
     void on_btnClear_clicked();
 
     void on_btnEqual_clicked();
+
+    void on_btnInverse_clicked();
 
 private:
     Ui::MainWindow *ui;
