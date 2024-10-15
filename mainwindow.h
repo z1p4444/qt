@@ -43,7 +43,6 @@ private slots:
 
     void on_btnEqual_clicked();
 
-    void on_btnInverse_clicked();
 
     virtual void keyPressEvent(QKeyEvent *event);
 

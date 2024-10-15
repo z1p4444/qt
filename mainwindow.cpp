@@ -64,9 +64,9 @@ QString MainWindow::calculation(bool *ok)
 
         if(op == "+"){
             result = operand1 + operand2;
-        }else if(op == "-"){
+        }else if(op == "_"){
             result = operand1 - operand2;
-        }else if(op == "*"){
+        }else if(op == "×"){
             result = operand1 * operand2;
         }else if(op == "/"){
             result = operand1 / operand2;
@@ -167,14 +167,13 @@ void MainWindow::btnUnaryOperatorClicked()
             result = sqrt(result);
         else if(op == "±")
             result =  (- result);
-
         ui->display->setText(QString::number(result));
     }
 }
 
 void MainWindow::on_btnEqual_clicked()
 {
-    if(operand != "")
+    if(operand != ""||operand == "=")
     {
         operands.push_back(operand);
         operand = "";
