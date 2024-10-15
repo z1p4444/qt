@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnInverse,SIGNAL(clicked()),this,SLOT(btnUnaryOperatorClicked()));
     connect(ui->btnSquare,SIGNAL(clicked()),this,SLOT(btnUnaryOperatorClicked()));
     connect(ui->btnSqrt,SIGNAL(clicked()),this,SLOT(btnUnaryOperatorClicked()));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -68,18 +70,23 @@ QString MainWindow::calculation(bool *ok)
             result = operand1 - operand2;
         }else if(op == "×"){
             result = operand1 * operand2;
-        }else if(op == "/"){
+        }else if(op == "/"&&operand2 !=0){
             result = operand1 / operand2;
+        }else if (op == "/" && operand2 == 0) {
+            ui->statusbar->showMessage("Error: Division by zero");
+            return "Error";
         }
 
-        operands.push_back(QString::number(result));
+
+     operands.push_back(QString::number(result));
 
         ui->statusbar->showMessage(QString("calculation is in progress :operand is %1,opcode is %2").arg(operands.size()).arg(opcodes.size()));
 
 
 
-    }else
+    }else{
         ui->statusbar->showMessage(QString("operand is %1,opcode is %2").arg(operands.size()).arg(opcodes.size()));
+    }
 
     return QString::number(result);
 }
@@ -88,19 +95,18 @@ void MainWindow::btnNumClicked()
 {
     QString digit = qobject_cast<QPushButton*>(sender())->text();
 
-    if(digit == "0" && operand == "0")
-        digit = "";
-    if(operand == "0" && digit != "0")
-        operand = "";
+    if(digit== "0"&&operand=="0")
+        digit= "";
 
-    operand +=digit;
-
+    if(operand == "0"&&digit!="0")
+        operand="";
 
 
-    ui->display->setText(operand);
 
-
+    operand += digit;
+    ui->display->setText(operand);  // 更新显示
 }
+
 
 
 
@@ -133,20 +139,22 @@ void MainWindow::on_btnClear_clicked()
 
 void MainWindow::btnBinaryOperatorClicked()
 {
-    ui->statusbar->showMessage("last operand "+operand );
+    ui->statusbar->showMessage("Last operand: " + operand);
+
     QString opcode = qobject_cast<QPushButton*>(sender())->text();
-    qDebug()<<opcode ;
-    if(operand != "")
-    {
-        operands.push_back(operand);
+    qDebug()<<opcode;
+
+    if (operand != "") {
+        operands.push_back(operand);  // 将当前操作数压入栈中
         operand = "";
         opcodes.push_back(opcode);
-
-    QString result = calculation();
-
-    ui->display->setText(result);
     }
+        QString result = calculation();
+        ui->display->setText(result);
+
+    ui->statusbar->showMessage("Opcode pressed: " + opcode);
 }
+
 
 void MainWindow::btnUnaryOperatorClicked()
 {
@@ -157,38 +165,67 @@ void MainWindow::btnUnaryOperatorClicked()
 
         QString op = qobject_cast<QPushButton *>(sender())->text();
 
-        if(op == "%")
+        if(op == "%"){
             result /=100.0;
-        else if(op == "1/X")
+        }else if(op == "1/X"){
+            if(result != 0){
             result = 1/result;
-        else if(op == "X^2")
+            }else{
+                ui->statusbar->showMessage("Error: Division by zero");
+                return;
+            }
+        }
+        else if(op == "X^2"){
             result *= result;
-        else if(op == "√x")
+        }else if(op == "√x"){
             result = sqrt(result);
-        else if(op == "±")
-            result =  (- result);
+        }else if(op == "±"){
+            result =  -result;
+        }
+        operand =QString::number(result);
         ui->display->setText(QString::number(result));
     }
 }
 
 void MainWindow::on_btnEqual_clicked()
 {
-    if(operand != ""||operand == "=")
-    {
+    // 如果有未处理的操作数，压入栈中
+    if (operand!="") {
         operands.push_back(operand);
-        operand = "";
+        operand="";
     }
-     QString result = calculation();
-     ui->display->setText(result);
+
+    // 调用计算函数获取结果
+    QString result = calculation();
+
+    ui->display->setText(result);  // 更新显示屏幕
+
+    // 清空操作符栈，保留计算结果以便继续操作
+    opcodes.clear();
+    operands.clear();  // 清空操作数栈
+    operand = result;  // 将结果作为下一个操作的初始值
+
 }
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug()<<"ccc";
+    qDebug()<<"KEY";
     foreach(auto btnKey , digitBTNs.keys())
     {
         if(event->key() == btnKey)
             digitBTNs[btnKey]->animateClick();
+    }
+    if (event->key() == Qt::Key_Plus) {
+        ui->btnPlus->animateClick();
+    } else if (event->key() == Qt::Key_Minus) {
+        ui->btnMinus->animateClick();
+    } else if (event->key() == Qt::Key_Asterisk) {
+        ui->btnMultiple->animateClick();
+    } else if (event->key() == Qt::Key_Slash) {
+        ui->btnDivide->animateClick();
+    } else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        ui->btnEqual->animateClick();
     }
     // if(event->key() == Qt::Key_0)
     //     ui->btnNum0->animateClick();
