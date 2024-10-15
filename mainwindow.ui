@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>计算器-练子逸-2022414040124</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QPushButton{

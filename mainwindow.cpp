@@ -7,16 +7,30 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->btnNum0,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum1,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum2,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum3,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum4,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum5,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum6,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum7,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum8,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
-    connect(ui->btnNum9,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+
+    digitBTNs = {{Qt::Key_0,ui->btnNum0},
+               {Qt::Key_1,ui->btnNum1},
+               {Qt::Key_2,ui->btnNum2},
+               {Qt::Key_3,ui->btnNum3},
+               {Qt::Key_4,ui->btnNum4},
+               {Qt::Key_5,ui->btnNum5},
+               {Qt::Key_6,ui->btnNum6},
+               {Qt::Key_7,ui->btnNum7},
+               {Qt::Key_8,ui->btnNum8},
+               };
+    foreach (auto btn, digitBTNs)
+        connect(btn,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+
+//    connect(ui->btnNum0,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum1,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum2,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum3,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum4,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum5,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum6,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum7,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum8,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
+//    connect(ui->btnNum9,SIGNAL(clicked()),this,SLOT(btnNumClicked()));
 
     connect(ui->btnPlus,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
     connect(ui->btnMinus,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
@@ -169,5 +183,18 @@ void MainWindow::on_btnEqual_clicked()
      ui->display->setText(result);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    qDebug()<<"ccc";
+    foreach(auto btnKey , digitBTNs.keys())
+    {
+        if(event->key() == btnKey)
+            digitBTNs[btnKey]->animateClick();
+    }
+    // if(event->key() == Qt::Key_0)
+    //     ui->btnNum0->animateClick();
+    // else if(event->key()== Qt::Key_1)
+    //     ui->btnNum1->animateClick();
 
+}
 
