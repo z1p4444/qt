@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>img/copy.png</file>
         <file>img/new.png</file>
+        <file>img/find.png</file>
+        <file>img/font.png</file>
+        <file>img/toolbar.png</file>
+        <file>img/toolbarnote.png</file>
+        <file>img/wrap.png</file>
     </qresource>
 </RCC>
