@@ -19,5 +19,6 @@
         <file>img/toolbar-status-edit.png</file>
         <file>img/undo.png</file>
         <file>img/line-numbers.png</file>
+        <file>img/sk.png</file>
     </qresource>
 </RCC>

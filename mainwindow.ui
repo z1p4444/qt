@@ -62,6 +62,7 @@
     <property name="title">
      <string>帮助(H)</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -398,6 +399,17 @@
    </property>
    <property name="text">
     <string>显示行号</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>关于(A)</string>
+   </property>
+   <property name="toolTip">
+    <string>关于</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
