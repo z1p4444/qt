@@ -2,7 +2,7 @@
 #define REPLACEDIALOG_H
 
 #include <QDialog>
-
+#include <QPlainTextEdit>
 namespace Ui {
 class ReplaceDialog;
 }

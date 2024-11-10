@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -47,16 +47,29 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="separator"/>
+    <addaction name="actionFind"/>
+    <addaction name="actionReplace"/>
+    <addaction name="separator"/>
+    <addaction name="actionSelectAll"/>
    </widget>
    <widget class="QMenu" name="menu_O">
     <property name="title">
      <string>格式(O)</string>
     </property>
+    <addaction name="actionLineWrap"/>
+    <addaction name="actionShowLineNumber"/>
+    <addaction name="actionFont"/>
+    <addaction name="actionFontColor"/>
+    <addaction name="actionFontBackgroundColor"/>
+    <addaction name="actionBackgroundColor"/>
    </widget>
    <widget class="QMenu" name="menu_V">
     <property name="title">
      <string>查看(V)</string>
     </property>
+    <addaction name="actionToolbar"/>
+    <addaction name="actionStatusBar"/>
    </widget>
    <widget class="QMenu" name="menu_H">
     <property name="title">
@@ -97,7 +110,7 @@
    <addaction name="separator"/>
    <addaction name="actionFont"/>
    <addaction name="actionShowLineNumber"/>
-   <addaction name="actionWrap"/>
+   <addaction name="actionLineWrap"/>
    <addaction name="separator"/>
    <addaction name="actionToolbar"/>
    <addaction name="actionStatusBar"/>
@@ -309,7 +322,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionWrap">
+  <action name="actionLineWrap">
    <property name="icon">
     <iconset resource="notepad.qrc">
      <normaloff>:/img/wrap.png</normaloff>:/img/wrap.png</iconset>
@@ -410,6 +423,39 @@
    </property>
    <property name="toolTip">
     <string>关于</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionFontColor">
+   <property name="text">
+    <string>字体颜色</string>
+   </property>
+   <property name="toolTip">
+    <string>设置字体颜色</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionBackgroundColor">
+   <property name="text">
+    <string>背景颜色</string>
+   </property>
+   <property name="toolTip">
+    <string>设置编辑器背景色</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionFontBackgroundColor">
+   <property name="text">
+    <string>字体背景色</string>
+   </property>
+   <property name="toolTip">
+    <string>字体背景色</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
