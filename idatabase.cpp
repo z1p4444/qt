@@ -14,6 +14,19 @@ void IDatabase::ininDatabase()
     }
 }
 
+bool IDatabase::initPatientModel()
+{
+    patientTabModel = new QSqlTableModel(this,database);
+    patientTabModel->setTable("patient");
+    patientTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    patientTabModel->setSort(patientTabModel->fieldIndex("name"),Qt::AscendingOrder);
+        if(!(patientTabModel->select()))
+            return false;
+
+    thePatientSelection = new QItemSelectionModel(patientTabModel);
+        return true;
+}
+
 QString IDatabase::userLogin(QString userName, QString password)
 {
     //return "LoginOK";
