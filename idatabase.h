@@ -16,6 +16,8 @@ public:
             // Instantiated on first use.
         return instance;
     }
+
+    QString userLogin(QString userName ,QString password);
 private:
     explicit IDatabase(QObject *parent = nullptr);
     IDatabase(IDatabase const&)               = delete;
