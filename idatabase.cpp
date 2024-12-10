@@ -27,6 +27,13 @@ bool IDatabase::initPatientModel()
         return true;
 }
 
+int IDatabase::addNewPatient()
+{
+    patientTabModel->insertRow(patientTabModel->rowCount(),QModelIndex());
+    QModelIndex curIndex = patientTabModel->index(patientTabModel->rowCount() - 1,1);
+    return curIndex.row();
+}
+
 bool IDatabase::searchPatient(QString filter)
 {
     patientTabModel->setFilter(filter);
