@@ -45,3 +45,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     lab4.qrc
+
+DISTFILES += \
+    img/修改.png \
+    img/删除.png \
+    img/查找.png \
+    img/添加.png

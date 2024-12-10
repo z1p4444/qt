@@ -3,5 +3,9 @@
         <file>img/login.png</file>
         <file>img/logout.png</file>
         <file>img/return.png</file>
+        <file>img/find.png</file>
+        <file>img/delete.png</file>
+        <file>img/add.png</file>
+        <file>img/change.png</file>
     </qresource>
 </RCC>
