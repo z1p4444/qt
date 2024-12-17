@@ -404,6 +404,7 @@ Makefile: ../../../ChatServer/ChatServer.pro D:/qt/6.6.3/mingw_64/mkspecs/win32-
 		../../../ChatServer/ChatServer.pro \
 		D:/qt/6.6.3/mingw_64/lib/Qt6Widgets.prl \
 		D:/qt/6.6.3/mingw_64/lib/Qt6Gui.prl \
+		D:/qt/6.6.3/mingw_64/lib/Qt6Network.prl \
 		D:/qt/6.6.3/mingw_64/lib/Qt6Core.prl \
 		D:/qt/6.6.3/mingw_64/lib/Qt6EntryPoint.prl \
 		D:/qt/6.6.3/mingw_64/mkspecs/features/build_pass.prf
@@ -742,6 +743,7 @@ D:/qt/6.6.3/mingw_64/mkspecs/features/lex.prf:
 ../../../ChatServer/ChatServer.pro:
 D:/qt/6.6.3/mingw_64/lib/Qt6Widgets.prl:
 D:/qt/6.6.3/mingw_64/lib/Qt6Gui.prl:
+D:/qt/6.6.3/mingw_64/lib/Qt6Network.prl:
 D:/qt/6.6.3/mingw_64/lib/Qt6Core.prl:
 D:/qt/6.6.3/mingw_64/lib/Qt6EntryPoint.prl:
 D:/qt/6.6.3/mingw_64/mkspecs/features/build_pass.prf:
