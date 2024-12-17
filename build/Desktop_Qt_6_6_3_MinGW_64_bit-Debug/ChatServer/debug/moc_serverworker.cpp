@@ -39,7 +39,7 @@ namespace {
 struct qt_meta_stringdata_CLASSServerWorkerENDCLASS_t {};
 constexpr auto qt_meta_stringdata_CLASSServerWorkerENDCLASS = QtMocHelpers::stringData(
     "ServerWorker",
-    "logMessgae",
+    "logMessage",
     "",
     "msg",
     "onReadyRead",
@@ -64,7 +64,7 @@ struct qt_meta_stringdata_CLASSServerWorkerENDCLASS_t {
 Q_CONSTINIT static const qt_meta_stringdata_CLASSServerWorkerENDCLASS_t qt_meta_stringdata_CLASSServerWorkerENDCLASS = {
     {
         QT_MOC_LITERAL(0, 12),  // "ServerWorker"
-        QT_MOC_LITERAL(13, 10),  // "logMessgae"
+        QT_MOC_LITERAL(13, 10),  // "logMessage"
         QT_MOC_LITERAL(24, 0),  // ""
         QT_MOC_LITERAL(25, 3),  // "msg"
         QT_MOC_LITERAL(29, 11),  // "onReadyRead"
@@ -73,7 +73,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSServerWorkerENDCLASS_t qt_meta_
         QT_MOC_LITERAL(58, 4)   // "type"
     },
     "ServerWorker",
-    "logMessgae",
+    "logMessage",
     "",
     "msg",
     "onReadyRead",
@@ -126,7 +126,7 @@ Q_CONSTINIT const QMetaObject ServerWorker::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSServerWorkerENDCLASS_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<ServerWorker, std::true_type>,
-        // method 'logMessgae'
+        // method 'logMessage'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'onReadyRead'
@@ -148,7 +148,7 @@ void ServerWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         auto *_t = static_cast<ServerWorker *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->logMessgae((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 0: _t->logMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 1: _t->onReadyRead(); break;
         case 2: _t->sendMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 3: _t->sendMessage((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
@@ -158,7 +158,7 @@ void ServerWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         int *result = reinterpret_cast<int *>(_a[0]);
         {
             using _t = void (ServerWorker::*)(const QString & );
-            if (_t _q_method = &ServerWorker::logMessgae; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+            if (_t _q_method = &ServerWorker::logMessage; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 0;
                 return;
             }
@@ -197,7 +197,7 @@ int ServerWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void ServerWorker::logMessgae(const QString & _t1)
+void ServerWorker::logMessage(const QString & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
