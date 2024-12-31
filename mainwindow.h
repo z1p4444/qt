@@ -26,9 +26,11 @@ public:
     QStack<QString> operands;
     QStack<QString> opcodes;
     QMap<int,QPushButton*> digitBTNs;
+    QMap<int,QPushButton*> digitBTNsStandard;
+    QMap<int,QPushButton*> digitBTNsScientific;
 
     QString calculation(bool *ok=NULL);
-private slots:
+public slots:
     void btnNumClicked();
 
     void btnBinaryOperatorClicked();
@@ -43,8 +45,15 @@ private slots:
 
     void on_btnEqual_clicked();
 
+public slots:
+    void switchToStandardMode();
+    void switchToScientificMode();
+    void switchToProgrammerMode();
+    void switchToDateCalculatorMode();
+    void handleButtonClick(QPushButton *btn);
 
     virtual void keyPressEvent(QKeyEvent *event);
+
 
 private:
     Ui::MainWindow *ui;
