@@ -147,10 +147,11 @@ void MainWindow::btnBinaryOperatorClicked()
     if (operand != "") {
         operands.push_back(operand);  // 将当前操作数压入栈中
         operand = "";
-        opcodes.push_back(opcode);
+
     }
-        QString result = calculation();
-        ui->display->setText(result);
+    opcodes.push_back(opcode);
+        // QString result = calculation();
+        // ui->display->setText(result);
 
     ui->statusbar->showMessage("Opcode pressed: " + opcode);
 }
