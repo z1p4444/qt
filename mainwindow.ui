@@ -44,6 +44,20 @@ font-size:48pt;
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="viewHistoryButton">
+        <property name="text">
+         <string>历史</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="clearHistoryButton">
+        <property name="text">
+         <string>清空历史</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="display">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -64,7 +78,7 @@ font-size:48pt;
     <item row="1" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1313,10 +1327,10 @@ font-size:48pt;
        <widget class="QTabWidget" name="tabWidget">
         <property name="geometry">
          <rect>
-          <x>60</x>
-          <y>70</y>
-          <width>741</width>
-          <height>611</height>
+          <x>20</x>
+          <y>50</y>
+          <width>761</width>
+          <height>631</height>
          </rect>
         </property>
         <property name="currentIndex">
@@ -1377,17 +1391,17 @@ font-size:48pt;
          <widget class="QComboBox" name="capacityFromCombo">
           <property name="geometry">
            <rect>
-            <x>50</x>
-            <y>70</y>
-            <width>121</width>
-            <height>41</height>
+            <x>10</x>
+            <y>80</y>
+            <width>89</width>
+            <height>27</height>
            </rect>
           </property>
          </widget>
          <widget class="QComboBox" name="capacityToCombo">
           <property name="geometry">
            <rect>
-            <x>520</x>
+            <x>630</x>
             <y>70</y>
             <width>89</width>
             <height>27</height>
@@ -1397,9 +1411,9 @@ font-size:48pt;
          <widget class="QLineEdit" name="capacityInput">
           <property name="geometry">
            <rect>
-            <x>220</x>
-            <y>60</y>
-            <width>261</width>
+            <x>110</x>
+            <y>50</y>
+            <width>491</width>
             <height>71</height>
            </rect>
           </property>
@@ -1420,8 +1434,8 @@ font-size:48pt;
          <widget class="QLineEdit" name="customRateInput">
           <property name="geometry">
            <rect>
-            <x>250</x>
-            <y>190</y>
+            <x>100</x>
+            <y>200</y>
             <width>211</width>
             <height>41</height>
            </rect>
@@ -1430,17 +1444,29 @@ font-size:48pt;
          <widget class="QPushButton" name="applyCustomRateButton">
           <property name="geometry">
            <rect>
-            <x>500</x>
+            <x>400</x>
             <y>200</y>
-            <width>221</width>
+            <width>321</width>
             <height>41</height>
            </rect>
           </property>
           <property name="text">
-           <string>PushButton</string>
+           <string>自定义汇率转换</string>
           </property>
          </widget>
         </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="historyPage">
+       <widget class="QListWidget" name="historyDisplay">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>150</y>
+          <width>591</width>
+          <height>361</height>
+         </rect>
+        </property>
        </widget>
       </widget>
      </widget>

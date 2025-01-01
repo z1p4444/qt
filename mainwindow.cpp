@@ -12,6 +12,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+Mode currentMode = Standard;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -155,6 +156,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(ui->btnCalculateDays, &QPushButton::clicked, this, &MainWindow::on_btnCalculateDays_clicked);
+    connect(ui->historyDisplay, &QListWidget::itemClicked, this, &MainWindow::reuseHistory);
 
 
 
@@ -435,6 +437,14 @@ void MainWindow::on_btnEqual_clicked()
         // 在十进制框中显示结果
         //ui->displayDec->setText(result);
 
+
+       //CalculationHistory entry = { expression, result, mode };
+
+        // 将历史记录添加到列表中
+//        history.append(entry);
+
+        // 更新历史记录显示
+        updateHistoryDisplay();
         // 清空栈，准备新操作
         operands.clear();
         opcodes.clear();
@@ -460,7 +470,6 @@ void MainWindow::on_btnEqual_clicked()
     // 确保更新状态栏和显示框
     updateDisplays(currentBase);
 }
-
 
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -815,4 +824,50 @@ void MainWindow::applyCustomRate()
     ui->display->setText(QString::number(result, 'f', 2));
 
     ui->statusbar->showMessage("自定义汇率应用成功", 3000);
+}
+void MainWindow::updateHistoryDisplay()
+{
+    // 清空当前显示的历史记录
+    ui->historyDisplay->clear();
+
+    // 遍历历史记录列表，添加到显示控件中
+    for (const auto& entry : history) {
+        QString displayText = QString("%1 = %2 (%3)")
+        .arg(entry.expression)
+            .arg(entry.result)
+            .arg(entry.mode);
+        ui->historyDisplay->addItem(displayText);
+    }
+}
+void MainWindow::on_viewHistoryButton_clicked()
+{
+    updateHistoryDisplay();
+    ui->stackedWidget->setCurrentWidget(ui->historyPage); // 切换到历史记录页面
+}
+void MainWindow::on_clearHistoryButton_clicked()
+{
+    history.clear();
+    ui->historyDisplay->clear();
+    ui->statusbar->showMessage("历史记录已清空", 3000);
+}
+void MainWindow::reuseHistory(QListWidgetItem *item)
+{
+    // 获取被点击的历史记录文本
+    QString selectedText = item->text();
+
+    // 从文本中提取表达式和结果（假设格式为 "表达式 = 结果 [模式]"）
+    QStringList parts = selectedText.split(" = ");
+    if (parts.size() < 2) {
+        ui->statusbar->showMessage("Invalid history format!");
+        return;
+    }
+
+    QString expression = parts[0]; // 提取表达式
+    QString result = parts[1].split(" [")[0]; // 提取结果
+
+    // 将提取的内容填充到输入框
+    ui->display->setText(expression);
+
+    // 提示用户重用了历史记录
+    ui->statusbar->showMessage("Reused history: " + expression + " = " + result);
 }
