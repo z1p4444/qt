@@ -64,7 +64,7 @@ font-size:48pt;
     <item row="1" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -931,28 +931,28 @@ font-size:48pt;
             <item row="0" column="0">
              <widget class="QPushButton" name="btnXOR">
               <property name="text">
-               <string>XOR</string>
+               <string>^</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QPushButton" name="btnOR">
               <property name="text">
-               <string>OR</string>
+               <string>|</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
              <widget class="QPushButton" name="btnAND">
               <property name="text">
-               <string>&amp;&amp;</string>
+               <string>AND</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
              <widget class="QPushButton" name="btnNOT">
               <property name="text">
-               <string>NOT</string>
+               <string>~</string>
               </property>
              </widget>
             </item>
@@ -1248,7 +1248,54 @@ font-size:48pt;
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page_2"/>
+      <widget class="QWidget" name="page_2">
+       <widget class="QDateEdit" name="dateEditStart">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>150</y>
+          <width>116</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QDateEdit" name="dateEditEnd">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>150</y>
+          <width>116</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnCalculateDays">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>230</y>
+          <width>431</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>btnCalculateDays</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>390</y>
+          <width>291</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>labelResult</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>

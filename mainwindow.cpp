@@ -8,6 +8,7 @@
 #include <QString>
 #include <bitset>
 #include <QRegularExpression>
+#include <QDate>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -133,9 +134,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnD, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("D"); });
     connect(ui->btnE, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("E"); });
     connect(ui->btnF, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("F"); });
+    connect(ui->btnAND,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnOR,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnNOT,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnXOR,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnLeft,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnRight,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
 
 
-    connect(ui->btnAND,&QPushButton::clicked,this,&MainWindow::onAndButtonClicked);
+    connect(ui->btnCalculateDays, &QPushButton::clicked, this, &MainWindow::on_btnCalculateDays_clicked);
+
     // 创建模式菜单
     QMenu *menu = new QMenu(this);
     QAction *standardMode = menu->addAction("标准型");
@@ -212,8 +220,22 @@ QString MainWindow::calculation(bool *ok)
         }else if (op == "/" && operand2 == 0) {
             ui->statusbar->showMessage("Error: Division by zero");
             return "Error";
-        }else if(op == "&&"){
-            result = (operand1 && operand2);
+        }else if (op == "AND") {  // 按位与
+            result = static_cast<int>(operand1) & static_cast<int>(operand2);
+        } else if (op == "|") {  // 按位或
+            result = static_cast<int>(operand1) | static_cast<int>(operand2);
+        } else if (op == "^") {  // 按位异或
+            result = static_cast<int>(operand1) ^ static_cast<int>(operand2);
+        } else if (op == "<<") { // 左移
+            result = static_cast<int>(operand1) << static_cast<int>(operand2);
+        } else if (op == ">>") { // 右移
+            result = static_cast<int>(operand1) >> static_cast<int>(operand2);
+        } else if (op == "~") {
+            if (operands.size() != 1) {
+                ui->statusbar->showMessage("Error: Unary operator '~' requires exactly one operand");
+                return "Error";
+            }
+            result = ~static_cast<int>(operand1);
         }else {
             ui->statusbar->showMessage("Error: Unknown operator");
             return "Error";
@@ -613,4 +635,18 @@ QString MainWindow::convertToBase(int num, int base) {
 }
 
 
+
+
+void MainWindow::on_btnCalculateDays_clicked()
+{
+    // 获取日期
+    QDate startDate = ui->dateEditStart->date();
+    QDate endDate = ui->dateEditEnd->date();
+
+    // 计算日期差
+    int daysDifference = startDate.daysTo(endDate);
+
+    // 显示结果
+    ui->display->setText(QString("日期差：%1 天").arg(daysDifference));
+}
 

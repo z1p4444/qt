@@ -70,6 +70,8 @@ private slots:
     void setBase(int base);
 
 
+    void on_btnCalculateDays_clicked();
+
 private:
     Ui::MainWindow *ui;
     int currentBase; // 添加这行，声明 currentBase
