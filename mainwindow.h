@@ -96,10 +96,11 @@ private:
     void initCurrencyData();
     void initCapacityData();
 private slots:
-    void convertCurrency();
     void fetchLiveRates();  // 获取实时汇率
     void handleNetworkReply(QNetworkReply* reply);  // 处理网络回复
     void on_convertCurrencyButton_clicked();
     void updateCurrencyResultLabel(double result);
+    double convertCurrency(const QString& from, const QString& to, double amount);
+    void applyCustomRate();
 };
 #endif // MAINWINDOW_H
