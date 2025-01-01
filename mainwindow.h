@@ -7,6 +7,8 @@
 #include <QKeyEvent>
 #include <QMap>
 #include <QPushButton>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -31,6 +33,7 @@ public:
     QMap<int,QPushButton*> digitBTNsProgramer;
 
     QString calculation(bool *ok=NULL);
+
 public slots:
     void btnNumClicked();
 
@@ -57,6 +60,7 @@ public slots:
     void switchToScientificMode();
     void switchToProgrammerMode();
     void switchToDateCalculatorMode();
+    void switchToCurrencyAndCapacityMode();
     void handleButtonClick(QPushButton *btn);
     void updateDisplays(int value);
 
@@ -71,7 +75,9 @@ private slots:
 
 
     void on_btnCalculateDays_clicked();
+private slots:
 
+    void convertCapacity();
 private:
     Ui::MainWindow *ui;
     int currentBase; // 添加这行，声明 currentBase
@@ -81,5 +87,19 @@ private:
     QString convertToBase(int num, int base);
     int parseInput(QString input, int base);
     bool isValidDigit(QString digit);
+
+    QMap<QString, double> currencyRates;  // 货币汇率表
+    QMap<QString, double> capacityRates;  // 容量换算表
+
+    QNetworkAccessManager *networkManager;  // 网络管理器
+
+    void initCurrencyData();
+    void initCapacityData();
+private slots:
+    void convertCurrency();
+    void fetchLiveRates();  // 获取实时汇率
+    void handleNetworkReply(QNetworkReply* reply);  // 处理网络回复
+    void on_convertCurrencyButton_clicked();
+    void updateCurrencyResultLabel(double result);
 };
 #endif // MAINWINDOW_H

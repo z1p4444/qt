@@ -9,11 +9,23 @@
 #include <bitset>
 #include <QRegularExpression>
 #include <QDate>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , networkManager(new QNetworkAccessManager(this))  // 初始化 networkManager
 {
     ui->setupUi(this);
+    // 初始化货币与容量单位
+    initCurrencyData();
+    initCapacityData();
+
+    // 绑定信号和槽
+    connect(ui->convertCurrencyButton, &QPushButton::clicked, this, &MainWindow::fetchLiveRates);
+    connect(ui->convertCapacityButton, &QPushButton::clicked, this, &MainWindow::convertCapacity);
+    connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::handleNetworkReply);
     currentBase = 10; // 默认进制为十进制
 
     digitBTNsStandard = {
@@ -150,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *scientificMode = menu->addAction("科学型");
     QAction *programmerMode = menu->addAction("程序员型");
     QAction *dateCalculatorMode = menu->addAction("日期计算");
+    QAction *CurrencyAndCapacityMode = menu->addAction("货币和容量计算");
 
     // 将菜单绑定到按钮
     ui->menuButton->setMenu(menu);
@@ -159,6 +172,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(scientificMode, &QAction::triggered, this, &MainWindow::switchToScientificMode);
     connect(programmerMode, &QAction::triggered, this, &MainWindow::switchToProgrammerMode);
     connect(dateCalculatorMode, &QAction::triggered, this, &MainWindow::switchToDateCalculatorMode);
+    connect(CurrencyAndCapacityMode, &QAction::triggered, this, &MainWindow::switchToCurrencyAndCapacityMode);
 }
 void MainWindow::updateDisplays(int value)
 {
@@ -507,7 +521,11 @@ void MainWindow::switchToDateCalculatorMode()
     ui->stackedWidget->setCurrentIndex(3);
     ui->statusbar->showMessage("已切换到日期计算模式");
 }
-
+void MainWindow::switchToCurrencyAndCapacityMode()
+{
+    ui->stackedWidget->setCurrentIndex(4);
+    ui->statusbar->showMessage("已切换到货币容量计算模式");
+}
 void MainWindow::handleButtonClick(QPushButton *btn)
 {
     int currentPage = ui->stackedWidget->currentIndex();
@@ -649,4 +667,131 @@ void MainWindow::on_btnCalculateDays_clicked()
     // 显示结果
     ui->display->setText(QString("日期差：%1 天").arg(daysDifference));
 }
+void MainWindow::initCurrencyData()
+{
+    // 初始化汇率（默认值）
+    currencyRates["USD_TO_EUR"] = 0.85;
+    currencyRates["EUR_TO_CNY"] = 7.8;
+    currencyRates["USD_TO_CNY"] = 7.0;
 
+    // 设置货币选项
+    ui->currencyFromCombo->addItems({"USD", "EUR", "CNY"});
+    ui->currencyToCombo->addItems({"USD", "EUR", "CNY"});
+}
+
+void MainWindow::initCapacityData()
+{
+    // 设置容量单位与换算比例（相对于升）
+    capacityRates["L_TO_ML"] = 1000.0;
+    capacityRates["L_TO_GALLON"] = 0.264172;
+    capacityRates["ML_TO_L"] = 0.001;
+
+    // 设置容量单位选项
+    ui->capacityFromCombo->addItems({"L", "ML", "GALLON"});
+    ui->capacityToCombo->addItems({"L", "ML", "GALLON"});
+}
+
+
+void MainWindow::convertCurrency()
+{
+    QString from = ui->currencyFromCombo->currentText();
+    QString to = ui->currencyToCombo->currentText();
+    double amount = ui->currencyInput->text().toDouble();
+
+    QString key = from + "_TO_" + to;
+    if (currencyRates.contains(key)) {
+        double rate = currencyRates[key];
+        double result = amount * rate;
+        ui->display->setText(QString::number(result));
+    } else {
+        ui->statusbar->showMessage("未找到对应汇率", 3000);
+    }
+}
+void MainWindow::fetchLiveRates()
+{
+    // 替换为您选择的汇率API的URL和密钥
+    QString apiKey = "091e5c8d3d4b8f91087e3f25";  // 替换为您的API密钥
+    QString url = QString("https://v6.exchangerate-api.com/v6/091e5c8d3d4b8f91087e3f25/latest/USD").arg(apiKey);
+
+    // 定义 QNetworkRequest 对象
+    QUrl requestUrl(url);
+    QNetworkRequest request(requestUrl);
+    qDebug() << "Requesting URL: " << requestUrl.toString();
+    // 发起网络请求
+    networkManager->get(request);  // 发送 GET 请求
+}
+void MainWindow::handleNetworkReply(QNetworkReply* reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray responseData = reply->readAll();
+        qDebug() << "Response Data:" << responseData;
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+        if (jsonDoc.isObject()) {
+            QJsonObject jsonObj = jsonDoc.object();
+            if (jsonObj.contains("conversion_rates")) {
+                QJsonObject rates = jsonObj["conversion_rates"].toObject();
+
+                // 提取一些示例汇率
+                double usdToEur = rates["EUR"].toDouble();
+                double usdToCny = rates["CNY"].toDouble();
+                qDebug() << "USD to EUR:" << usdToEur;
+                qDebug() << "USD to CNY:" << usdToCny;
+
+                // 更新到类成员变量
+                currencyRates["USD_TO_EUR"] = usdToEur;
+                currencyRates["USD_TO_CNY"] = usdToCny;
+
+                // 在 UI 上显示成功消息
+                ui->statusbar->showMessage("汇率更新成功！", 3000);
+            } else {
+                qDebug() << "JSON does not contain 'conversion_rates'";
+                ui->statusbar->showMessage("API 返回格式错误！", 3000);
+            }
+        } else {
+            qDebug() << "Failed to parse JSON!";
+            ui->statusbar->showMessage("解析返回数据失败！", 3000);
+        }
+    } else {
+        qDebug() << "Network Error:" << reply->errorString();
+        ui->statusbar->showMessage("网络错误: " + reply->errorString(), 3000);
+    }
+
+    reply->deleteLater();  // 清理资源
+}
+void MainWindow::convertCapacity()
+{
+    QString from = ui->capacityFromCombo->currentText();
+    QString to = ui->capacityToCombo->currentText();
+    double amount = ui->capacityInput->text().toDouble();
+
+    QString key = from + "_TO_" + to;
+    if (capacityRates.contains(key)) {
+        double rate = capacityRates[key];
+        double result = amount * rate;
+        ui->display->setText(QString::number(result));
+    } else {
+        ui->statusbar->showMessage("未找到对应容量单位换算", 3000);
+    }
+}
+
+void MainWindow::on_convertCurrencyButton_clicked()
+{
+    double inputValue = ui->inputSpinBox->value();
+    QString fromCurrency = ui->currencyFromCombo->currentText();
+    QString toCurrency = ui->currencyToCombo->currentText();
+
+    double rate = 1.0; // 默认汇率为1（即无转换）
+    if (fromCurrency == "USD" && toCurrency == "EUR") {
+        rate = currencyRates["USD_TO_EUR"];
+    } else if (fromCurrency == "USD" && toCurrency == "CNY") {
+        rate = currencyRates["USD_TO_CNY"];
+    }
+
+    double result = inputValue * rate;
+    updateCurrencyResultLabel(result);
+}
+void MainWindow::updateCurrencyResultLabel(double result)
+{
+    ui->display->setText(QString::number(result, 'f', 2));
+}
