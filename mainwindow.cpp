@@ -5,12 +5,15 @@
 #include <QStack>
 #include <QMap>
 #include <functional>
-
+#include <QString>
+#include <bitset>
+#include <QRegularExpression>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    currentBase = 10; // 默认进制为十进制
 
     digitBTNsStandard = {
                          {Qt::Key_0, ui->btnNum0},
@@ -37,6 +40,24 @@ MainWindow::MainWindow(QWidget *parent)
                            {Qt::Key_8, ui->btnNum8_3},
                            {Qt::Key_9, ui->btnNum9_3},
                            };
+    // digitBTNsProgramer = {
+    //                        {Qt::Key_0, ui->btnNum0_5},
+    //                        {Qt::Key_1, ui->btnNum1_5},
+    //                        {Qt::Key_2, ui->btnNum2_5},
+    //                        {Qt::Key_3, ui->btnNum3_5},
+    //                        {Qt::Key_4, ui->btnNum4_5},
+    //                        {Qt::Key_5, ui->btnNum5_5},
+    //                        {Qt::Key_6, ui->btnNum6_5},
+    //                        {Qt::Key_7, ui->btnNum7_5},
+    //                        {Qt::Key_8, ui->btnNum8_5},
+    //                        {Qt::Key_9, ui->btnNum9_5},
+    //                         {Qt::Key_A, ui->btnA},
+    //                         {Qt::Key_B, ui->btnB},
+    //                         {Qt::Key_C, ui->btnC},
+    //                         {Qt::Key_D, ui->btnD},
+    //                         {Qt::Key_E, ui->btnE},
+    //                         {Qt::Key_F, ui->btnF},
+    //                        };
 
     foreach (auto btn, digitBTNsStandard.values()) {
         connect(btn, &QPushButton::clicked, [this, btn]() {
@@ -48,6 +69,11 @@ MainWindow::MainWindow(QWidget *parent)
             this->handleButtonClick(btn);
         });
     }
+    // foreach (auto btn, digitBTNsProgramer.values()) {
+    //     connect(btn, &QPushButton::clicked, [this, btn]() {
+    //         this->handleButtonClick(btn);
+    //     });
+    // }
     connect(ui->btnPlus,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
     connect(ui->btnMinus,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
     connect(ui->btnMultiple,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
@@ -77,6 +103,39 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnCos, &QPushButton::clicked, this, &MainWindow::btnUnaryOperatorClicked);
     connect(ui->btnTan, &QPushButton::clicked, this, &MainWindow::btnUnaryOperatorClicked);
     connect(ui->btnSign_3, &QPushButton::clicked, this, &MainWindow::btnUnaryOperatorClicked);
+
+    connect(ui->btnPlus_4,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnMinus_4,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnMultiple_4,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnDivide_4,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
+    connect(ui->btnEqual_4,SIGNAL(clicked()),this,SLOT(on_btnEqual_clicked()));
+    connect(ui->btnPercentage_4,SIGNAL(clicked()),this,SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnDel_4,SIGNAL(clicked()),this,SLOT(on_btnDel_clicked()));
+    connect(ui->btnClear_4,SIGNAL(clicked()),this,SLOT(on_btnClear_clicked()));
+    connect(ui->btnSign_4, &QPushButton::clicked, this, &MainWindow::btnUnaryOperatorClicked);
+    connect(ui->btnHex, &QPushButton::clicked, this, [=]() { setBase(16); });
+    connect(ui->btnDec, &QPushButton::clicked, this, [=]() { setBase(10); });
+    connect(ui->btnOct, &QPushButton::clicked, this, [=]() { setBase(8); });
+    connect(ui->btnBin, &QPushButton::clicked, this, [=]() { setBase(2); });
+    connect(ui->btnNum0_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("0"); });
+    connect(ui->btnNum1_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("1"); });
+    connect(ui->btnNum2_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("2"); });
+    connect(ui->btnNum3_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("3"); });
+    connect(ui->btnNum4_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("4"); });
+    connect(ui->btnNum5_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("5"); });
+    connect(ui->btnNum6_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("6"); });
+    connect(ui->btnNum7_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("7"); });
+    connect(ui->btnNum8_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("8"); });
+    connect(ui->btnNum9_5, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("9"); });
+    connect(ui->btnA, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("A"); });
+    connect(ui->btnB, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("B"); });
+    connect(ui->btnC, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("C"); });
+    connect(ui->btnD, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("D"); });
+    connect(ui->btnE, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("E"); });
+    connect(ui->btnF, &QPushButton::clicked, this, [=]() { onDigitButtonClicked("F"); });
+
+
+    connect(ui->btnAND,&QPushButton::clicked,this,&MainWindow::onAndButtonClicked);
     // 创建模式菜单
     QMenu *menu = new QMenu(this);
     QAction *standardMode = menu->addAction("标准型");
@@ -93,6 +152,30 @@ MainWindow::MainWindow(QWidget *parent)
     connect(programmerMode, &QAction::triggered, this, &MainWindow::switchToProgrammerMode);
     connect(dateCalculatorMode, &QAction::triggered, this, &MainWindow::switchToDateCalculatorMode);
 }
+void MainWindow::updateDisplays(int value)
+{
+    // 将 `operand` 转换为整数
+    bool ok;
+    value = operand.toInt(&ok, currentBase); // 使用当前基数解析 `operand`
+    if (!ok) {
+        value = 0; // 如果解析失败，默认为 0
+    }
+    // 更新当前输入框
+    ui->display->setText(operand);
+
+    // 转换并显示为不同进制
+    ui->displayHex->setText(QString::number(value, 16).toUpper());
+    ui->displayDec->setText(QString::number(value, 10));
+    ui->displayOct->setText(QString::number(value, 8));
+    ui->displayBin->setText(QString::number(value, 2));
+}
+void MainWindow::setBase(int base)
+{
+    currentBase = base;
+    operand.clear();
+    updateDisplays(base);
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -102,7 +185,11 @@ MainWindow::~MainWindow()
 QString MainWindow::calculation(bool *ok)
 {
     double result = 0;
-    if(operands.size() == 2 && !opcodes.isEmpty()){
+    if (operands.size() < 2 || opcodes.isEmpty()) {
+        ui->statusbar->showMessage("Waiting for more inputs...");
+        return operands.isEmpty() ? "0" : operands.back();
+    }
+    while(operands.size() == 2 && !opcodes.isEmpty()){
 
         double operand1 = operands.front().toDouble();
         operands.pop_front();
@@ -115,6 +202,7 @@ QString MainWindow::calculation(bool *ok)
 
         if(op == "+"){
             result = operand1 + operand2;
+            ui->display->setText(QString::number(result));
         }else if(op == "_"){
             result = operand1 - operand2;
         }else if(op == "×"){
@@ -124,19 +212,24 @@ QString MainWindow::calculation(bool *ok)
         }else if (op == "/" && operand2 == 0) {
             ui->statusbar->showMessage("Error: Division by zero");
             return "Error";
+        }else if(op == "&&"){
+            result = (operand1 && operand2);
+        }else {
+            ui->statusbar->showMessage("Error: Unknown operator");
+            return "Error";
         }
 
 
         // 保留结果
-        operands.push_back(QString::number(result));
+        operands.push_front(QString::number(result));
         ui->statusbar->showMessage(QString("Calculation complete: operand count %1, opcode count %2")
                                        .arg(operands.size()).arg(opcodes.size()));
 
 
 
-    }else{
-        ui->statusbar->showMessage(QString("Invalid state: operand count %1, opcode count %2")
-                                       .arg(operands.size()).arg(opcodes.size()));
+    }
+    if(!operands.isEmpty()){
+        result = operands.front().toDouble();
     }
 
     return QString::number(result);
@@ -177,7 +270,8 @@ void MainWindow::on_btnDel_clicked()
 
     operand = operand.left(operand.length() - 1);
     ui->display->setText(operand);
-
+    ui->displayDec->setText(operand);
+    updateDisplays(currentBase);
 }
 
 
@@ -185,7 +279,8 @@ void MainWindow::on_btnClear_clicked()
 {
     operand.clear();
     ui->display->setText(operand);
-
+    ui->displayDec->setText(operand);
+    updateDisplays(currentBase);
 }
 
 void MainWindow::btnBinaryOperatorClicked()
@@ -200,10 +295,19 @@ void MainWindow::btnBinaryOperatorClicked()
         operand.clear();
 
     }
-    // 如果已经有两个操作数和一个操作符，则立即计算
-    if (operands.size() == 2 && !opcodes.isEmpty()) {
-        QString result = calculation();
-        ui->display->setText(result);
+    // 如果已经有两个操作数和一个操作符，则计算
+    while (operands.size() == 2 && !opcodes.isEmpty()) {
+        bool ok;
+        QString result = calculation(&ok);
+        if (ok && result != "Error") {
+            ui->display->setText(result);
+            operand = result; // 将结果作为下一个操作的初始值
+            operands.clear();              // 清空操作数栈
+            operands.push_back(operand);   // 更新栈中的操作数
+        } else{
+            ui->display->setText(result);
+        }
+
     }
     opcodes.push_back(opcode);
         // QString result = calculation();
@@ -263,28 +367,60 @@ void MainWindow::btnUnaryOperatorClicked()
 
 void MainWindow::on_btnEqual_clicked()
 {
+    bool ok;
+    QVector<double> decimalOperands;
+
     // 如果有未处理的操作数，压入栈中
     if (!operand.isEmpty()) {
         operands.push_back(operand);
         operand.clear();
     }
 
-    // 调用计算函数获取结果
-    QString result = calculation();
+    // 将所有操作数从当前进制转换为十进制
+    for (const QString& op : operands) {
+        double value = op.toDouble(&ok); // 转换为浮点数（当前基数的支持可扩展）
+        if (!ok) {
+            ui->display->setText("Error");
+            operands.clear();
+            opcodes.clear();
+            return;
+        }
+        decimalOperands.push_back(value);
+    }
 
-    if (result != "Error") {
-        ui->display->setText(result);  // 更新显示屏幕
-        operands.clear();  // 清空操作数栈
-        opcodes.clear();   // 清空操作符栈
-        operand = result;  // 将结果作为下一个操作的初始值
+    // 调用计算函数进行计算
+    QString result = calculation(&ok);
+
+    if (ok && result != "Error") {
+        // 在十进制框中显示结果
+        //ui->displayDec->setText(result);
+
+        // 清空栈，准备新操作
+        operands.clear();
+        opcodes.clear();
+
+        // 将结果作为下一个操作的初始值
+        operand = result;
+
+        // 更新其他进制框
+        int decimalResult = result.toInt(&ok, 10); // 确保结果可解析为十进制整数
+        if (ok) {
+            ui->displayHex->setText(QString::number(decimalResult, 16).toUpper());
+            ui->displayOct->setText(QString::number(decimalResult, 8));
+            ui->displayBin->setText(QString::number(decimalResult, 2));
+        }
     } else {
         // 如果发生错误，清空所有状态
         operands.clear();
         opcodes.clear();
         operand.clear();
+        ui->display->setText("Error");
     }
 
+    // 确保更新状态栏和显示框
+    updateDisplays(currentBase);
 }
+
 
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -362,7 +498,118 @@ void MainWindow::handleButtonClick(QPushButton *btn)
         ui->statusbar->showMessage("Scientific mode button clicked: " + btn->text());
         operand += btn->text();
         ui->display->setText(operand);
+    }else if (currentPage == 2) {
+        ui->statusbar->showMessage("Programer mode button clicked: " + btn->text());
+        operand += btn->text();
+        // ui->displayHex->setText(operand);
+        //默认十进制
+        //ui->displayDec->setText(operand);
+        // ui->displayOct->setText(operand);
+        // ui->displayBin->setText(operand);
     }
+}
+
+
+QString convertToBase(int num, int base) {
+    if (base == 2) return QString::fromStdString(std::bitset<32>(num).to_string());
+    if (base == 8) return QString::number(num, 8);
+    if (base == 16) return QString::number(num, 16).toUpper();
+    return QString::number(num); // 默认十进制
+}
+
+// 从字符串解析为十进制
+int parseInput(QString input, int base) {
+    return input.toInt(nullptr, base);
+}
+
+int bitwiseAnd(int a, int b) { return a & b; }
+int bitwiseOr(int a, int b) { return a | b; }
+int bitwiseXor(int a, int b) { return a ^ b; }
+int bitwiseNot(int a) { return ~a; }
+int leftShift(int a, int shift) { return a << shift; }
+int rightShift(int a, int shift) { return a >> shift; }
+
+void MainWindow::onBaseChange(int base) {
+    currentBase = base;
+    int value = parseInput(ui->display->text(), currentBase);
+    ui->display->setText(convertToBase(value, base));
+}
+
+void MainWindow::onAndButtonClicked() {
+    int num1 = parseInput(operand1, currentBase);
+    int num2 = parseInput(operand2, currentBase);
+    int result = bitwiseAnd(num1, num2);
+    ui->display->setText(convertToBase(result, currentBase));
+}
+
+void MainWindow::onDigitButtonClicked(QString digit) {
+
+
+        // 检查输入是否合法
+       QRegularExpression regex;
+        switch (currentBase) {
+        case 16:
+            regex =QRegularExpression("[0-9a-fA-F]"); // 十六进制合法字符
+            break;
+        case 10:
+            regex = QRegularExpression("[0-9]"); // 十进制合法字符
+            break;
+        case 8:
+            regex =QRegularExpression("[0-7]"); // 八进制合法字符
+            break;
+        case 2:
+            regex =QRegularExpression("[0-1]"); // 二进制合法字符
+            break;
+        }
+
+        if (regex.match(digit).hasMatch()) {
+            operand.append(digit); // 如果输入合法，添加到 `operand`
+        } else {
+            // 非法输入时，可提示用户或忽略
+            return;
+        }
+
+        updateDisplays(currentBase); // 更新显示
+
+
+}
+
+bool MainWindow::isValidDigit(QString digit) {
+    if (currentBase == 2) return digit == "0" || digit == "1";
+    if (currentBase == 8) return digit >= "0" && digit <= "7";
+    if (currentBase == 10) return digit >= "0" && digit <= "9";
+    if (currentBase == 16) return (digit >= "0" && digit <= "9") || (digit >= "A" && digit <= "F");
+    return false;
+}
+
+int MainWindow::parseInput(QString input, int base) {
+    return input.toInt(nullptr, base);
+}
+QString MainWindow::convertToBase(int num, int base) {
+    if(base<2||base>16) {
+        return "Error: Unsupported base";
+    }
+
+    QString result;
+    const char *digits = "0123456789ABCDEF";
+
+    // 处理负数
+    bool isNegative = num < 0;
+    if (isNegative) {
+        num = -num;
+    }
+
+    do {
+        int remainder = num % base;
+        result.prepend(digits[remainder]);
+        num /= base;
+    } while (num > 0);
+
+    if (isNegative) {
+        result.prepend('-');
+    }
+
+    return result;
 }
 
 
