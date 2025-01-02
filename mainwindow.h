@@ -11,7 +11,10 @@
 #include <QNetworkReply>
 #include <QWidget>
 #include <QListWidgetItem>
-
+#include <QSettings>
+#include <QFont>
+#include <QColor>
+#include <QFile>
 struct CalculationHistory {
     QString expression; // 表达式
     QString result;     // 结果
@@ -49,6 +52,10 @@ public:
     QMap<int,QPushButton*> digitBTNsProgramer;
 
     QString calculation(bool *ok,QString &expression );
+    void switchLanguage(const QString &language);
+
+    void loadTheme(const QString &themeName); // 加载主题
+    void applyUserSettings();                // 应用用户的自定义设置
 
 public slots:
     void btnNumClicked();
@@ -125,7 +132,25 @@ private slots:
     void on_clearHistoryButton_clicked();
     void on_historyDisplay_itemClicked(QListWidgetItem *item);
     void on_viewHistoryButton_clicked();
+    void updateUIForLanguageChange();
+    void on_btnChange_clicked();
+
 private:
     QStringList history;
+    QMenu *menu;
+    QAction *standardMode;
+    QAction *scientificMode;
+    QAction *programmerMode;
+    QAction *dateCalculatorMode;
+    QAction *CurrencyAndCapacityMode;
+    void setupMenu();
+private:
+    void loadStyleSheet(const QString &styleSheetPath); // 更新应用的 QSS 样式表
+    void setupThemeMenu();
+    void setupSettingsMenu();
+    void changeFontSize(int size);
+    void openFontDialog();
+    void openColorDialog();
+
 };
 #endif // MAINWINDOW_H

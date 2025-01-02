@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/styles">
+        <file>E:\c++\qt\lab1\styles\DayMode.qss</file>
+        <file>E:\c++\qt\lab1\styles\NightMode.qss</file>
+    </qresource>
+</RCC>

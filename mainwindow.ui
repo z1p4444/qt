@@ -6,56 +6,56 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>926</width>
-    <height>922</height>
+    <width>741</width>
+    <height>718</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>6</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>计算器-练子逸-2022414040124</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton{
-background-color:rgb(85,24,111);
-font-size:24pt;
-color:white;
-border-radius:2px;
-}
-QPushButton:hover{
-background-color:lightviolet;
-color:white
-}
-QPushButton:pressed{
-background-color:darkviolet;
-color:black
-}
-QLineEdit{
-font-size:48pt;
-}</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_8">
+   <layout class="QGridLayout" name="gridLayout_12">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QPushButton" name="menuButton">
-        <property name="text">
-         <string>菜单</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="viewHistoryButton">
-        <property name="text">
-         <string>历史</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="clearHistoryButton">
-        <property name="text">
-         <string>清空历史</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="lbutton">
+          <property name="text">
+           <string>语言</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="menuButton">
+          <property name="text">
+           <string>菜单</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="viewHistoryButton">
+          <property name="text">
+           <string>历史</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="clearHistoryButton">
+          <property name="text">
+           <string>清空历史</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLineEdit" name="display">
@@ -78,7 +78,7 @@ font-size:48pt;
     <item row="1" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1458,16 +1458,11 @@ font-size:48pt;
        </widget>
       </widget>
       <widget class="QWidget" name="historyPage">
-       <widget class="QListWidget" name="historyDisplay">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>150</y>
-          <width>591</width>
-          <height>711</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_11">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="historyDisplay"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -1478,7 +1473,7 @@ font-size:48pt;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>926</width>
+     <width>741</width>
      <height>24</height>
     </rect>
    </property>

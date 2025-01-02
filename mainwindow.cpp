@@ -14,13 +14,29 @@
 #include <QJsonValue>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QTranslator>
+#include <QLocale>
+#include <QFile>
+#include <QColorDialog>
+#include <QFontDialog>
+#include <QApplication>
+QTranslator translator;
 Mode currentMode = Standard;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , networkManager(new QNetworkAccessManager(this))  // 初始化 networkManager
 {
+    QTranslator translator;
+    if (translator.load(":/translations/app_en_US.qm")) {
+        qApp->installTranslator(&translator);
+    }
     ui->setupUi(this);
+    setupThemeMenu();
+    setupSettingsMenu();
+
+    // 初始化默认样式
+    loadStyleSheet(":/styles/DayMode.qss");
     // 初始化货币与容量单位
     initCurrencyData();
     initCapacityData();
@@ -161,15 +177,35 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // 创建模式菜单
-    QMenu *menu = new QMenu(this);
-    QAction *standardMode = menu->addAction("标准型");
-    QAction *scientificMode = menu->addAction("科学型");
-    QAction *programmerMode = menu->addAction("程序员型");
-    QAction *dateCalculatorMode = menu->addAction("日期计算");
-    QAction *CurrencyAndCapacityMode = menu->addAction("货币和容量计算");
+    menu = new QMenu(this);
+    standardMode = menu->addAction(tr("标准型"));
+    scientificMode = menu->addAction(tr("科学型"));
+    programmerMode = menu->addAction(tr("程序员型"));
+    dateCalculatorMode = menu->addAction(tr("日期计算"));
+    CurrencyAndCapacityMode = menu->addAction(tr("货币和容量计算"));
 
     // 将菜单绑定到按钮
     ui->menuButton->setMenu(menu);
+
+
+    QMenu *lmenu = new QMenu(this);
+    ui->lbutton->setMenu(lmenu);
+
+    // 创建语言切换的菜单项
+    QAction *cn = lmenu->addAction("中文");
+    QAction *en = lmenu->addAction("English");
+
+    // 绑定各自的触发信号到对应语言切换函数
+    connect(cn, &QAction::triggered, this, [this]() {
+        switchLanguage("zh_CN");
+
+    });
+
+    connect(en, &QAction::triggered, this, [this]() {
+        switchLanguage("en_US");
+
+    });
+
 
     // 连接菜单的信号到槽函数
     connect(standardMode, &QAction::triggered, this, &MainWindow::switchToStandardMode);
@@ -212,7 +248,7 @@ MainWindow::~MainWindow()
 QString MainWindow::calculation(bool *ok,QString &expression){
     double result = 0;
     if (operands.size() < 2 || opcodes.isEmpty()) {
-        ui->statusbar->showMessage("Waiting for more inputs...");
+        ui->statusbar->showMessage(tr("Waiting for more inputs..."));
         *ok = false;
         return operands.isEmpty() ? "0" : operands.back();
     }
@@ -237,7 +273,7 @@ QString MainWindow::calculation(bool *ok,QString &expression){
         } else if (op == "/" && operand2 != 0) {
             result = operand1 / operand2;
         } else if (op == "/" && operand2 == 0) {
-            ui->statusbar->showMessage("Error: Division by zero");
+            ui->statusbar->showMessage(tr("Error: Division by zero"));
             return "Error";
         } else if (op == "AND") {
             result = static_cast<int>(operand1) & static_cast<int>(operand2);
@@ -250,7 +286,7 @@ QString MainWindow::calculation(bool *ok,QString &expression){
         } else if (op == ">>") {
             result = static_cast<int>(operand1) >> static_cast<int>(operand2);
         } else {
-            ui->statusbar->showMessage("Error: Unknown operator");
+            ui->statusbar->showMessage(tr("Error: Unknown operator"));
             *ok = false;
             return "Error";
         }
@@ -327,16 +363,16 @@ void MainWindow::on_btnClear_clicked()
 
 void MainWindow::btnBinaryOperatorClicked()
 {
-    ui->statusbar->showMessage("Last operand: " + operand);
+    ui->statusbar->showMessage(tr("Last operand: ") + operand);
 
     QPushButton *btn = qobject_cast<QPushButton *>(sender());
     if (!btn) return;
 
     QString opcode = btn->text();
-    qDebug() << "Binary operator clicked: " << opcode;
+    qDebug() << tr("Binary operator clicked: ") << opcode;
     // 防止操作数和操作符状态不完整
     if (operand.isEmpty() && operands.isEmpty()) {
-        ui->statusbar->showMessage("Error: No operand before operator");
+        ui->statusbar->showMessage(tr("Error: No operand before operator"));
         return;
     }
 
@@ -369,7 +405,7 @@ void MainWindow::btnBinaryOperatorClicked()
         opcodes.push_back(opcode);
     }
 
-    ui->statusbar->showMessage("Opcode pressed: " + opcode);
+    ui->statusbar->showMessage(tr("Opcode pressed: " )+ opcode);
 }
 
 
@@ -437,7 +473,7 @@ void MainWindow::on_btnEqual_clicked()
     for (const QString& op : operands) {
         double value = op.toDouble(&ok); // 转换为浮点数（当前基数的支持可扩展）
         if (!ok) {
-            ui->display->setText("Error");
+            ui->display->setText(tr("Error"));
             operands.clear();
             opcodes.clear();
             return;
@@ -473,7 +509,7 @@ void MainWindow::on_btnEqual_clicked()
         operands.clear();
         opcodes.clear();
         operand.clear();
-        ui->display->setText("Error");
+        ui->display->setText(tr("Error"));
     }
 
     // 确保更新状态栏和显示框
@@ -524,30 +560,30 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::switchToStandardMode()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    ui->statusbar->showMessage("已切换到标准型");
+    ui->statusbar->showMessage(tr("已切换到标准型"));
 }
 
 void MainWindow::switchToScientificMode()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    ui->statusbar->showMessage("已切换到科学型");
+    ui->statusbar->showMessage(tr("已切换到科学型"));
 }
 
 void MainWindow::switchToProgrammerMode()
 {
     ui->stackedWidget->setCurrentIndex(2);
-    ui->statusbar->showMessage("已切换到程序员型");
+    ui->statusbar->showMessage(tr("已切换到程序员型"));
 }
 
 void MainWindow::switchToDateCalculatorMode()
 {
     ui->stackedWidget->setCurrentIndex(3);
-    ui->statusbar->showMessage("已切换到日期计算模式");
+    ui->statusbar->showMessage(tr("已切换到日期计算模式"));
 }
 void MainWindow::switchToCurrencyAndCapacityMode()
 {
     ui->stackedWidget->setCurrentIndex(4);
-    ui->statusbar->showMessage("已切换到货币容量计算模式");
+    ui->statusbar->showMessage(tr("已切换到货币容量计算模式"));
 }
 void MainWindow::handleButtonClick(QPushButton *btn)
 {
@@ -580,7 +616,7 @@ void MainWindow::handleButtonClick(QPushButton *btn)
 
         ui->display->setText(operand);
     }else if (currentPage == 2) {
-        ui->statusbar->showMessage("Programer mode button clicked: " + btn->text());
+        ui->statusbar->showMessage(tr("Programer mode button clicked: ") + btn->text());
         operand += btn->text();
         // ui->displayHex->setText(operand);
         //默认十进制
@@ -706,7 +742,7 @@ void MainWindow::on_btnCalculateDays_clicked()
     int daysDifference = startDate.daysTo(endDate);
 
     // 显示结果
-    ui->display->setText(QString("日期差：%1 天").arg(daysDifference));
+    ui->display->setText(QString(tr("日期差：%1 天")).arg(daysDifference));
 }
 void MainWindow::initCurrencyData()
 {
@@ -762,7 +798,7 @@ double MainWindow::convertCurrency(const QString& from, const QString& to, doubl
         // 转换公式
         return amount * (toRate / fromRate);
     } else {
-        ui->statusbar->showMessage("缺少汇率信息", 3000);
+        ui->statusbar->showMessage(tr("缺少汇率信息"), 3000);
         return 0.0; // 默认返回 0
     }
 }
@@ -794,11 +830,11 @@ void MainWindow::handleNetworkReply(QNetworkReply* reply)
                 for (const QString& key : rates.keys()) {
                     currencyRates[key] = rates[key].toDouble();
                 }
-                ui->statusbar->showMessage("汇率更新成功！", 3000);
+                ui->statusbar->showMessage(tr("汇率更新成功！"), 3000);
             }
         }
     } else {
-        ui->statusbar->showMessage("网络错误: " + reply->errorString(), 3000);
+        ui->statusbar->showMessage(tr("网络错误: ") + reply->errorString(), 3000);
     }
     reply->deleteLater();
 }
@@ -814,7 +850,7 @@ void MainWindow::convertCapacity()
         double result = amount * rate;
         ui->display->setText(QString::number(result));
     } else {
-        ui->statusbar->showMessage("未找到对应容量单位换算", 3000);
+        ui->statusbar->showMessage(tr("未找到对应容量单位换算"), 3000);
     }
 }
 
@@ -838,7 +874,7 @@ void MainWindow::applyCustomRate()
     // 获取用户输入的自定义汇率
     double customRate = ui->customRateInput->text().toDouble();
     if (customRate <= 0) {
-        ui->statusbar->showMessage("请输入有效的自定义汇率", 3000);
+        ui->statusbar->showMessage(tr("请输入有效的自定义汇率"), 3000);
         return;
     }
 
@@ -851,7 +887,7 @@ void MainWindow::applyCustomRate()
     // 显示结果
     ui->display->setText(QString::number(result, 'f', 2));
 
-    ui->statusbar->showMessage("自定义汇率应用成功", 3000);
+    ui->statusbar->showMessage(tr("自定义汇率应用成功"), 3000);
 }
 
 void MainWindow::on_clearHistoryButton_clicked()
@@ -859,7 +895,7 @@ void MainWindow::on_clearHistoryButton_clicked()
     history.clear();
     ui->historyDisplay->clear();
     updateHistoryList(); // 更新历史显示控件
-    QMessageBox::information(this, "历史记录", "历史记录已清除！");
+    QMessageBox::information(this, tr("历史记录"),tr("历史记录已清除！"));
 }
 
 
@@ -882,12 +918,108 @@ void MainWindow::updateHistoryList()
 void MainWindow::on_viewHistoryButton_clicked()
 {
     if (history.isEmpty()) {
-        QMessageBox::information(this, "历史记录", "没有历史记录！");
+        QMessageBox::information(this, tr("历史记录"), tr("没有历史记录！"));
         return;
     }
 
     QString allHistory = history.join("\n");
-    QMessageBox::information(this, "历史记录", allHistory);
+    QMessageBox::information(this, tr("历史记录"), allHistory);
     ui->stackedWidget->setCurrentWidget(ui->historyPage);
 }
 
+void MainWindow::switchLanguage(const QString &language)
+{
+    static QTranslator translator;
+
+    // 生成翻译文件的路径（可以根据实际项目调整路径）
+    QString qmFilePath = QString("E:/c++/qt/lab1/translations/app_%1.qm").arg(language);
+    qDebug() << "Looking for translation file at:" << qmFilePath;
+
+    // 加载翻译文件
+    if (translator.load(qmFilePath)) {
+        qApp->installTranslator(&translator);
+        ui->retranslateUi(this);  // 更新界面文字
+        standardMode->setText(tr("标准型"));
+        scientificMode->setText(tr("科学型"));
+        programmerMode->setText(tr("程序员型"));
+        dateCalculatorMode->setText(tr("日期计算"));
+        CurrencyAndCapacityMode->setText(tr("货币和容量计算"));
+        qDebug() << "Language switched to:" << language;
+    } else {
+        qDebug() << "Failed to load language:" << language;
+    }
+}
+
+
+void MainWindow::updateUIForLanguageChange() {
+    ui->retranslateUi(this); // 重新翻译界面
+    // 更新自定义设置的翻译
+    ui->statusbar->showMessage(tr("Language switched successfully"));
+}
+
+void MainWindow::setupMenu() {
+    menu = new QMenu(this);
+
+    // 创建 QAction 并添加到菜单中
+    standardMode = menu->addAction(tr("标准型"));
+    scientificMode = menu->addAction(tr("科学型"));
+    programmerMode = menu->addAction(tr("程序员型"));
+    dateCalculatorMode = menu->addAction(tr("日期计算"));
+    CurrencyAndCapacityMode = menu->addAction(tr("货币和容量计算"));
+
+    // 设置菜单
+    ui->menuButton->setMenu(menu);
+}
+void MainWindow::loadStyleSheet(const QString &styleSheetPath) {
+    QFile file(styleSheetPath);
+    if (file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        qApp->setStyleSheet(styleSheet);
+    }
+}
+void MainWindow::setupThemeMenu() {
+    QMenu *themeMenu = new QMenu(tr("主题"), this);
+
+    QAction *dayMode = themeMenu->addAction(tr("白天模式"));
+    QAction *nightMode = themeMenu->addAction(tr("夜间模式"));
+
+    connect(dayMode, &QAction::triggered, this, [this]() {
+        loadStyleSheet("E:/c++/qt/lab1/styles/DayMode.qss");
+    });
+
+    connect(nightMode, &QAction::triggered, this, [this]() {
+        loadStyleSheet("E:/c++/qt/lab1/styles/NightMode.qss");
+    });
+
+    ui->menubar->addMenu(themeMenu);
+}
+void MainWindow::openColorDialog() {
+    QColor color = QColorDialog::getColor(Qt::white, this, tr("选择颜色"));
+    if (color.isValid()) {
+        qApp->setStyleSheet(QString("QWidget { background-color: %1; }").arg(color.name()));
+    }
+}
+
+void MainWindow::openFontDialog() {
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, this);
+    if (ok) {
+        qApp->setFont(font);
+    }
+}
+void MainWindow::setupSettingsMenu() {
+    QMenu *settingsMenu = new QMenu(tr("自定义"), this);
+
+    QAction *changeColor = settingsMenu->addAction(tr("更改颜色"));
+    QAction *changeFont = settingsMenu->addAction(tr("更改字体"));
+
+    connect(changeColor, &QAction::triggered, this, &MainWindow::openColorDialog);
+    connect(changeFont, &QAction::triggered, this, &MainWindow::openFontDialog);
+
+    ui->menubar->addMenu(settingsMenu);
+}
+void MainWindow::changeFontSize(int size) {
+    QFont font = qApp->font();
+    font.setPointSize(size);
+    qApp->setFont(font);
+}
