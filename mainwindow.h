@@ -22,6 +22,7 @@ enum Mode { Standard, Scientific };
 
 // 在头文件中声明全局变量
 extern Mode currentMode;
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -33,7 +34,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-
+    bool isOperatorPressed;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -47,7 +48,7 @@ public:
     QMap<int,QPushButton*> digitBTNsScientific;
     QMap<int,QPushButton*> digitBTNsProgramer;
 
-    QString calculation(bool *ok=NULL);
+    QString calculation(bool *ok,QString &expression );
 
 public slots:
     void btnNumClicked();
@@ -110,13 +111,9 @@ private:
 
     void initCurrencyData();
     void initCapacityData();
+    void updateHistoryList();
 
-    QList<CalculationHistory> history; // 历史记录列表
-    bool isScientificMode = false;    // 标志当前是否是科学模式
 
-    // 函数声明
-    void updateHistoryDisplay();
-    void reuseHistory(QListWidgetItem *item);
 private slots:
     void fetchLiveRates();  // 获取实时汇率
     void handleNetworkReply(QNetworkReply* reply);  // 处理网络回复
@@ -124,8 +121,11 @@ private slots:
     void updateCurrencyResultLabel(double result);
     double convertCurrency(const QString& from, const QString& to, double amount);
     void applyCustomRate();
-private slots:
-    void on_viewHistoryButton_clicked();
+
     void on_clearHistoryButton_clicked();
+    void on_historyDisplay_itemClicked(QListWidgetItem *item);
+    void on_viewHistoryButton_clicked();
+private:
+    QStringList history;
 };
 #endif // MAINWINDOW_H

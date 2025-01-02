@@ -12,6 +12,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QMessageBox>
+#include <QPushButton>
 Mode currentMode = Standard;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -155,9 +157,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnRight,SIGNAL(clicked()),this,SLOT(btnBinaryOperatorClicked()));
 
 
-    connect(ui->btnCalculateDays, &QPushButton::clicked, this, &MainWindow::on_btnCalculateDays_clicked);
-    connect(ui->historyDisplay, &QListWidget::itemClicked, this, &MainWindow::reuseHistory);
-
 
 
 
@@ -210,14 +209,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QString MainWindow::calculation(bool *ok)
-{
+QString MainWindow::calculation(bool *ok,QString &expression){
     double result = 0;
     if (operands.size() < 2 || opcodes.isEmpty()) {
         ui->statusbar->showMessage("Waiting for more inputs...");
+        *ok = false;
         return operands.isEmpty() ? "0" : operands.back();
     }
-    while(operands.size() == 2 && !opcodes.isEmpty()){
+
+    while (operands.size() == 2 && !opcodes.isEmpty()) {
 
         double operand1 = operands.front().toDouble();
         operands.pop_front();
@@ -226,56 +226,56 @@ QString MainWindow::calculation(bool *ok)
 
         QString op = opcodes.front();
         opcodes.pop_front();
-
-
-        if(op == "+"){
+        // history.append(expression);
+        if (op == "+") {
+             ui->statusbar->showMessage(QString::number(opcodes.size()));
             result = operand1 + operand2;
-            ui->display->setText(QString::number(result));
-        }else if(op == "_"){
+        } else if (op == "_") {
             result = operand1 - operand2;
-        }else if(op == "×"){
+        } else if (op == "×") {
             result = operand1 * operand2;
-        }else if(op == "/"&&operand2 !=0){
+        } else if (op == "/" && operand2 != 0) {
             result = operand1 / operand2;
-        }else if (op == "/" && operand2 == 0) {
+        } else if (op == "/" && operand2 == 0) {
             ui->statusbar->showMessage("Error: Division by zero");
             return "Error";
-        }else if (op == "AND") {  // 按位与
+        } else if (op == "AND") {
             result = static_cast<int>(operand1) & static_cast<int>(operand2);
-        } else if (op == "|") {  // 按位或
+        } else if (op == "|") {
             result = static_cast<int>(operand1) | static_cast<int>(operand2);
-        } else if (op == "^") {  // 按位异或
+        } else if (op == "^") {
             result = static_cast<int>(operand1) ^ static_cast<int>(operand2);
-        } else if (op == "<<") { // 左移
+        } else if (op == "<<") {
             result = static_cast<int>(operand1) << static_cast<int>(operand2);
-        } else if (op == ">>") { // 右移
+        } else if (op == ">>") {
             result = static_cast<int>(operand1) >> static_cast<int>(operand2);
-        } else if (op == "~") {
-            if (operands.size() != 1) {
-                ui->statusbar->showMessage("Error: Unary operator '~' requires exactly one operand");
-                return "Error";
-            }
-            result = ~static_cast<int>(operand1);
-        }else {
+        } else {
             ui->statusbar->showMessage("Error: Unknown operator");
+            *ok = false;
             return "Error";
         }
 
-
-        // 保留结果
+        expression = QString("%1 %2 %3 = %4")
+                         .arg(QString::number(operand1))
+                         .arg(op)
+                         .arg(QString::number(operand2))
+                         .arg(QString::number(result));
+        history.append(expression);
         operands.push_front(QString::number(result));
-        ui->statusbar->showMessage(QString("Calculation complete: operand count %1, opcode count %2")
-                                       .arg(operands.size()).arg(opcodes.size()));
-
-
 
     }
-    if(!operands.isEmpty()){
+
+    if (!operands.isEmpty()) {
         result = operands.front().toDouble();
     }
 
+    *ok = true;
     return QString::number(result);
 }
+
+
+
+
 
 void MainWindow::btnNumClicked()
 {
@@ -329,31 +329,45 @@ void MainWindow::btnBinaryOperatorClicked()
 {
     ui->statusbar->showMessage("Last operand: " + operand);
 
-    QString opcode = qobject_cast<QPushButton*>(sender())->text();
-    qDebug()<<opcode;
+    QPushButton *btn = qobject_cast<QPushButton *>(sender());
+    if (!btn) return;
+
+    QString opcode = btn->text();
+    qDebug() << "Binary operator clicked: " << opcode;
+    // 防止操作数和操作符状态不完整
+    if (operand.isEmpty() && operands.isEmpty()) {
+        ui->statusbar->showMessage("Error: No operand before operator");
+        return;
+    }
 
     if (!operand.isEmpty()) {
         operands.push_back(operand);  // 将当前操作数压入栈中
         operand.clear();
 
     }
+    ui->display->setText(ui->display->text() + " " + opcode+ " ");
     // 如果已经有两个操作数和一个操作符，则计算
     while (operands.size() == 2 && !opcodes.isEmpty()) {
         bool ok;
-        QString result = calculation(&ok);
+        QString expression;
+        QString result = calculation(&ok,expression);
         if (ok && result != "Error") {
-            ui->display->setText(result);
+            QString fullExpression = expression + " = " + result;
+            ui->display->setText(fullExpression);
             operand = result; // 将结果作为下一个操作的初始值
             operands.clear();              // 清空操作数栈
             operands.push_back(operand);   // 更新栈中的操作数
         } else{
             ui->display->setText(result);
+            return ;
         }
 
     }
-    opcodes.push_back(opcode);
-        // QString result = calculation();
-        // ui->display->setText(result);
+    if (!opcodes.isEmpty() && operands.size() < 2) {
+        opcodes.back() = opcode;
+    } else {
+        opcodes.push_back(opcode);
+    }
 
     ui->statusbar->showMessage("Opcode pressed: " + opcode);
 }
@@ -410,6 +424,7 @@ void MainWindow::btnUnaryOperatorClicked()
 void MainWindow::on_btnEqual_clicked()
 {
     bool ok;
+    QString expression;
     QVector<double> decimalOperands;
 
     // 如果有未处理的操作数，压入栈中
@@ -431,20 +446,14 @@ void MainWindow::on_btnEqual_clicked()
     }
 
     // 调用计算函数进行计算
-    QString result = calculation(&ok);
+    QString result = calculation(&ok,expression);
 
     if (ok && result != "Error") {
-        // 在十进制框中显示结果
-        //ui->displayDec->setText(result);
 
+        ui->display->setText(ui->display->text() + " = " + result);
+        // history.append(ui->display->text());
+        updateHistoryList(); // 更新历史记录显示
 
-       //CalculationHistory entry = { expression, result, mode };
-
-        // 将历史记录添加到列表中
-//        history.append(entry);
-
-        // 更新历史记录显示
-        updateHistoryDisplay();
         // 清空栈，准备新操作
         operands.clear();
         opcodes.clear();
@@ -469,6 +478,7 @@ void MainWindow::on_btnEqual_clicked()
 
     // 确保更新状态栏和显示框
     updateDisplays(currentBase);
+
 }
 
 
@@ -543,13 +553,31 @@ void MainWindow::handleButtonClick(QPushButton *btn)
 {
     int currentPage = ui->stackedWidget->currentIndex();
 
+    if (!btn) return;
+    QString btnText = btn->text();
     if (currentPage == 0) { // 标准模式
-        ui->statusbar->showMessage("Standard mode button clicked: " + btn->text());
-        operand += btn->text();
+        if (isOperatorPressed) {
+            // 如果按下操作符，清空 operand 并开始新输入
+            operand = btnText;
+            isOperatorPressed = false; // 重置状态
+        } else {
+            // 继续输入当前数字
+            operand += btnText;
+        }
+
         ui->display->setText(operand);
     } else if (currentPage == 1) {
         ui->statusbar->showMessage("Scientific mode button clicked: " + btn->text());
-        operand += btn->text();
+
+        if (isOperatorPressed) {
+            // 如果按下操作符，清空 operand 并开始新输入
+            operand = btnText;
+            isOperatorPressed = false; // 重置状态
+        } else {
+            // 继续输入当前数字
+            operand += btnText;
+        }
+
         ui->display->setText(operand);
     }else if (currentPage == 2) {
         ui->statusbar->showMessage("Programer mode button clicked: " + btn->text());
@@ -825,49 +853,41 @@ void MainWindow::applyCustomRate()
 
     ui->statusbar->showMessage("自定义汇率应用成功", 3000);
 }
-void MainWindow::updateHistoryDisplay()
-{
-    // 清空当前显示的历史记录
-    ui->historyDisplay->clear();
 
-    // 遍历历史记录列表，添加到显示控件中
-    for (const auto& entry : history) {
-        QString displayText = QString("%1 = %2 (%3)")
-        .arg(entry.expression)
-            .arg(entry.result)
-            .arg(entry.mode);
-        ui->historyDisplay->addItem(displayText);
-    }
-}
-void MainWindow::on_viewHistoryButton_clicked()
-{
-    updateHistoryDisplay();
-    ui->stackedWidget->setCurrentWidget(ui->historyPage); // 切换到历史记录页面
-}
 void MainWindow::on_clearHistoryButton_clicked()
 {
     history.clear();
     ui->historyDisplay->clear();
-    ui->statusbar->showMessage("历史记录已清空", 3000);
+    updateHistoryList(); // 更新历史显示控件
+    QMessageBox::information(this, "历史记录", "历史记录已清除！");
 }
-void MainWindow::reuseHistory(QListWidgetItem *item)
-{
-    // 获取被点击的历史记录文本
-    QString selectedText = item->text();
 
-    // 从文本中提取表达式和结果（假设格式为 "表达式 = 结果 [模式]"）
-    QStringList parts = selectedText.split(" = ");
-    if (parts.size() < 2) {
-        ui->statusbar->showMessage("Invalid history format!");
+
+void MainWindow::on_historyDisplay_itemClicked(QListWidgetItem *item)
+{
+    QString selectedHistory = item->text();
+    QString result = selectedHistory.split("=").last().trimmed(); // 提取结果
+
+    // 重用结果
+    operand = result;
+    ui->display->setText(result);
+}
+void MainWindow::updateHistoryList()
+{
+    ui->historyDisplay->clear(); // 清空列表
+    ui->historyDisplay->addItems(history); // 添加历史记录
+}
+
+
+void MainWindow::on_viewHistoryButton_clicked()
+{
+    if (history.isEmpty()) {
+        QMessageBox::information(this, "历史记录", "没有历史记录！");
         return;
     }
 
-    QString expression = parts[0]; // 提取表达式
-    QString result = parts[1].split(" [")[0]; // 提取结果
-
-    // 将提取的内容填充到输入框
-    ui->display->setText(expression);
-
-    // 提示用户重用了历史记录
-    ui->statusbar->showMessage("Reused history: " + expression + " = " + result);
+    QString allHistory = history.join("\n");
+    QMessageBox::information(this, "历史记录", allHistory);
+    ui->stackedWidget->setCurrentWidget(ui->historyPage);
 }
+
