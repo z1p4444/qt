@@ -2,11 +2,9 @@ QT       += core gui
 QT += widgets
 QT += network
 RESOURCES += translations.qrc
-RESOURCES += styles.qrc
-
 TRANSLATIONS += translations/app_zh_CN.ts translations/app_en_US.ts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+RESOURCES += styles.qrc
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.

@@ -86,7 +86,7 @@ public slots:
     void switchToCurrencyAndCapacityMode();
     void handleButtonClick(QPushButton *btn);
     void updateDisplays(int value);
-
+    void setApplicationFont(const QFont &font);
 
 
     virtual void keyPressEvent(QKeyEvent *event);

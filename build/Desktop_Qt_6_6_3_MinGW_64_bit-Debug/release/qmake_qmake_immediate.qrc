@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+<file alias="RESOURCES">E:/c++/qt/lab1/RESOURCES</file>
+<file alias="+=">E:/c++/qt/lab1/+=</file>
+</qresource>
+</RCC>

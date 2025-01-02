@@ -1000,11 +1000,17 @@ void MainWindow::openColorDialog() {
     }
 }
 
+void MainWindow::setApplicationFont(const QFont &font) {
+    QString fontStyle = QString("QWidget { font-family: '%1'; font-size: %2pt; }")
+    .arg(font.family())
+        .arg(font.pointSize());
+    qApp->setStyleSheet(fontStyle);
+}
 void MainWindow::openFontDialog() {
     bool ok;
     QFont font = QFontDialog::getFont(&ok, this);
     if (ok) {
-        qApp->setFont(font);
+        setApplicationFont(font);
     }
 }
 void MainWindow::setupSettingsMenu() {
